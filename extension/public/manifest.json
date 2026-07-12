@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Bookwalka",
+  "version": "0.1.0",
+  "description": "Targeted manga translation on web pages",
+  "permissions": [
+    "scripting",
+    "storage"
+  ],
+  "icons": {
+    "16": "bell.png",
+    "32": "bell.png",
+    "48": "bell.png",
+    "128": "bell.png"
+  },
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "bell.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
