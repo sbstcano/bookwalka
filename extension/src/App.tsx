@@ -18,24 +18,49 @@ const FAQ_ITEMS = [
 function App() {
   const [health, setHealth] = useState<HealthStatus>({ status: 'loading' });
   const [targetLang, setTargetLang] = useState('en');
+  const [backendUrl, setBackendUrl] = useState('http://127.0.0.1:8765');
+  const [translationModel, setTranslationModel] = useState('deepseek-v4-pro');
+  const [backendApiKey, setBackendApiKey] = useState('');
   const [langSaved, setLangSaved] = useState(false);
+  const [backendSaved, setBackendSaved] = useState(false);
+  const [modelSaved, setModelSaved] = useState(false);
+  const [apiKeySaved, setApiKeySaved] = useState(false);
   const [enabled, setEnabled] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check backend health
-    fetchHealth();
+    let initialUrl = 'http://127.0.0.1:8765';
+    let initialApiKey = '';
 
-    // Load stored settings
+    // Detect Safari iOS and add class to HTML tag for conditional CSS styling
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      document.documentElement.classList.add('ios-safari');
+    }
+
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(['targetLanguage', 'extensionEnabled'], (result: Record<string, any>) => {
+      chrome.storage.local.get(['targetLanguage', 'extensionEnabled', 'backendUrl', 'translationModel', 'backendApiKey'], (result: Record<string, any>) => {
         if (result.targetLanguage) {
           setTargetLang(result.targetLanguage);
         }
         if (result.extensionEnabled !== undefined) {
           setEnabled(result.extensionEnabled);
         }
+        if (result.backendUrl) {
+          setBackendUrl(result.backendUrl);
+          initialUrl = result.backendUrl;
+        }
+        if (result.translationModel) {
+          setTranslationModel(result.translationModel);
+        }
+        if (result.backendApiKey) {
+          setBackendApiKey(result.backendApiKey);
+          initialApiKey = result.backendApiKey;
+        }
+        fetchHealth(initialUrl, initialApiKey);
       });
+    } else {
+      fetchHealth(initialUrl, initialApiKey);
     }
   }, []);
 
@@ -46,9 +71,17 @@ function App() {
     }
   };
 
-  const fetchHealth = () => {
+  const fetchHealth = (urlOverride?: string, apiKeyOverride?: string) => {
     setHealth({ status: 'loading' });
-    fetch('http://127.0.0.1:8765/v1/health')
+    const targetUrl = (urlOverride || backendUrl).replace(/\/+$/, '');
+    const activeKey = apiKeyOverride !== undefined ? apiKeyOverride : backendApiKey;
+    
+    const headers: Record<string, string> = {};
+    if (activeKey) {
+      headers['X-API-Key'] = activeKey;
+    }
+
+    fetch(`${targetUrl}/v1/health`, { headers })
       .then((res) => {
         if (!res.ok) throw new Error('Not OK');
         return res.json();
@@ -79,23 +112,70 @@ function App() {
     }
   };
 
-  const handleStartSelection = () => {
-    setErrorMsg(null);
-    if (typeof chrome !== 'undefined' && chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs: chrome.tabs.Tab[]) => {
-        if (tabs[0]?.id) {
-          chrome.tabs.sendMessage(tabs[0].id, { type: 'START_SELECTION' }, () => {
-            if (chrome.runtime.lastError) {
-              setErrorMsg('Unable to start selection. Please reload the tab and try again.');
-            } else {
-              // Close popup once selection starts
-              window.close();
-            }
-          });
-        }
+  const handleBackendUrlChange = (newUrl: string) => {
+    const cleanedUrl = newUrl.trim().replace(/\/+$/, '');
+    setBackendUrl(newUrl);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ backendUrl: cleanedUrl }, () => {
+        setBackendSaved(true);
+        setTimeout(() => setBackendSaved(false), 1500);
+        fetchHealth(cleanedUrl);
       });
     } else {
-      setErrorMsg('Extension mode is not available in a standard browser tab.');
+      setBackendSaved(true);
+      setTimeout(() => setBackendSaved(false), 1500);
+      fetchHealth(cleanedUrl);
+    }
+  };
+
+  const handleBackendApiKeyChange = (newKey: string) => {
+    const cleanedKey = newKey.trim();
+    setBackendApiKey(newKey);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ backendApiKey: cleanedKey }, () => {
+        setApiKeySaved(true);
+        setTimeout(() => setApiKeySaved(false), 1500);
+        fetchHealth(backendUrl, cleanedKey);
+      });
+    } else {
+      setApiKeySaved(true);
+      setTimeout(() => setApiKeySaved(false), 1500);
+      fetchHealth(backendUrl, cleanedKey);
+    }
+  };
+
+  const handleModelChange = (newModel: string) => {
+    setTranslationModel(newModel);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ translationModel: newModel }, () => {
+        setModelSaved(true);
+        setTimeout(() => setModelSaved(false), 1500);
+      });
+    } else {
+      setModelSaved(true);
+      setTimeout(() => setModelSaved(false), 1500);
+    }
+  };
+
+  const handleStartSelection = () => {
+    setErrorMsg(null);
+    try {
+      if (typeof chrome !== 'undefined' && chrome.runtime) {
+        chrome.runtime.sendMessage({ type: 'POPUP_START_SELECTION' }, (response: any) => {
+          if (chrome.runtime.lastError) {
+            setErrorMsg('Error: ' + chrome.runtime.lastError.message);
+          } else if (response && response.error) {
+            setErrorMsg('Failed: ' + response.error);
+          } else {
+            // Close popup once selection starts
+            window.close();
+          }
+        });
+      } else {
+        setErrorMsg('Extension mode is not available (chrome.runtime is undefined).');
+      }
+    } catch (err: any) {
+      setErrorMsg('Error: ' + err.message);
     }
   };
 
@@ -148,9 +228,9 @@ function App() {
 
         {health.status === 'offline' && (
           <div className="error-banner">
-            Local backend at <code>127.0.0.1:8765</code> is unreachable. 
+            Backend at <code>{backendUrl}</code> is unreachable. 
             Please start the FastAPI server and click Refresh.
-            <button className="text-link" onClick={fetchHealth}>Refresh</button>
+            <button className="text-link" onClick={() => fetchHealth()}>Refresh</button>
           </div>
         )}
 
@@ -178,6 +258,79 @@ function App() {
               </select>
               <span className="save-status-indicator">
                 {langSaved && 'Saved!'}
+              </span>
+            </div>
+          </div>
+
+          <div className="input-group" style={{ marginTop: '12px' }}>
+            <label htmlFor="backend-url">Backend URL</label>
+            <div className="input-row">
+              <input
+                id="backend-url"
+                type="text"
+                value={backendUrl}
+                onChange={(e) => handleBackendUrlChange(e.target.value)}
+                placeholder="http://127.0.0.1:8765"
+                className="text-input"
+                style={{
+                  flex: 1,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '6px',
+                  color: 'white',
+                  padding: '6px 8px',
+                  fontSize: '13px'
+                }}
+              />
+              <span className="save-status-indicator">
+                {backendSaved && 'Saved!'}
+              </span>
+            </div>
+          </div>
+
+          <div className="input-group" style={{ marginTop: '12px' }}>
+            <label htmlFor="backend-api-key">Backend API Key</label>
+            <div className="input-row">
+              <input
+                id="backend-api-key"
+                type="password"
+                value={backendApiKey}
+                onChange={(e) => handleBackendApiKeyChange(e.target.value)}
+                placeholder="Optional (set if VPS auth is enabled)"
+                className="text-input"
+                style={{
+                  flex: 1,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '6px',
+                  color: 'white',
+                  padding: '6px 8px',
+                  fontSize: '13px'
+                }}
+              />
+              <span className="save-status-indicator">
+                {apiKeySaved && 'Saved!'}
+              </span>
+            </div>
+          </div>
+
+          <div className="input-group" style={{ marginTop: '12px' }}>
+            <label htmlFor="translation-model">Translation Model</label>
+            <div className="input-row">
+              <select
+                id="translation-model"
+                value={translationModel}
+                onChange={(e) => handleModelChange(e.target.value)}
+                className="lang-select"
+              >
+                <option value="deepseek-v4-pro">DeepSeek v4 Pro</option>
+                <option value="deepseek-v4-flash">DeepSeek v4 Flash</option>
+                <option value="deepseek-chat">DeepSeek Chat (V3/R1)</option>
+                <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+              </select>
+              <span className="save-status-indicator">
+                {modelSaved && 'Saved!'}
               </span>
             </div>
           </div>

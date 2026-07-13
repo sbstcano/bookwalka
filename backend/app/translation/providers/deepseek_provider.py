@@ -5,14 +5,14 @@ from app.config import settings
 from app.translation.interface import TranslationProvider
 from app.translation.schemas import PageTranslationRequest, PageTranslationResult, TranslationItem
 
-logger = logging.getLogger("gemini_provider")
+logger = logging.getLogger("deepseek_provider")
 
-class GeminiTranslationProvider(TranslationProvider):
+class DeepSeekTranslationProvider(TranslationProvider):
     def __init__(self):
-        self.api_key = settings.gemini_api_key
+        self.api_key = settings.deepseek_api_key
         self.model = settings.translation_model
         if self.model == "mock-model":
-            self.model = "gemini-1.5-flash"
+            self.model = "deepseek-chat"
 
     async def translate_text(
         self,
@@ -22,11 +22,14 @@ class GeminiTranslationProvider(TranslationProvider):
         model: str | None = None
     ) -> str:
         if not self.api_key:
-            raise ValueError("Gemini API key (MANGA_GEMINI_API_KEY) is not configured.")
+            raise ValueError("DeepSeek API key (MANGA_DEEPSEEK_API_KEY) is required when using DeepSeek provider.")
 
-        active_model = model or self.model
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{active_model}:generateContent?key={self.api_key}"
-        
+        url = f"{settings.deepseek_api_base}/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+
         lang_names = {
             "en": "English",
             "fr": "French",
@@ -37,44 +40,51 @@ class GeminiTranslationProvider(TranslationProvider):
         }
         target_lang_name = lang_names.get(target_lang.lower(), target_lang)
 
-        system_instruction = (
-            f"You are a professional Japanese to {target_lang_name} manga translator and localizer. "
-            f"Your priority is to produce natural-sounding {target_lang_name} that is faithful to the meaning and tone. "
-            "Translate only the provided text without adding any chat, side remarks, or explanations."
-        )
+        active_model = model or self.model
 
         payload = {
-            "contents": [{
-                "parts": [{"text": text}]
-            }],
-            "systemInstruction": {
-                "parts": [{"text": system_instruction}]
-            },
-            "generationConfig": {
-                "temperature": 0.3,
-            }
+            "model": active_model,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        f"You are a professional Japanese to {target_lang_name} manga translator and localizer. "
+                        f"Your priority is to produce natural-sounding {target_lang_name} that is faithful to the meaning and tone. "
+                        "Translate only the provided text without adding any chat, side remarks, or explanations."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ],
+            "temperature": 0.3
         }
 
         async with httpx.AsyncClient() as client:
-            res = await client.post(url, json=payload, timeout=30.0)
+            res = await client.post(url, headers=headers, json=payload, timeout=30.0)
             if res.status_code != 200:
-                raise RuntimeError(f"Gemini API returned status {res.status_code}: {res.text}")
+                raise RuntimeError(f"DeepSeek API returned status {res.status_code}: {res.text}")
             
             data = res.json()
             try:
-                translated = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                translated = data["choices"][0]["message"]["content"].strip()
                 return translated
             except (KeyError, IndexError) as e:
-                raise RuntimeError(f"Failed to parse Gemini response: {e}. Raw response: {data}")
+                raise RuntimeError(f"Failed to parse DeepSeek response: {e}. Raw response: {data}")
 
     async def translate_page(
         self,
         request: PageTranslationRequest
     ) -> PageTranslationResult:
         if not self.api_key:
-            raise ValueError("Gemini API key is not configured.")
+            raise ValueError("DeepSeek API key is required when using DeepSeek provider.")
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
+        url = f"{settings.deepseek_api_base}/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
 
         system_instruction = (
             "You are a professional Japanese to English manga translator and localizer.\n"
@@ -82,7 +92,6 @@ class GeminiTranslationProvider(TranslationProvider):
             "You must reply only with a valid JSON object matching the requested schema."
         )
 
-        # Build prompt showing regions
         regions_data = [
             {"id": r.id, "order": r.order, "kind": r.kind, "japanese": r.japanese}
             for r in request.page.regions
@@ -111,26 +120,23 @@ Regions to translate:
 """
 
         payload = {
-            "contents": [{
-                "parts": [{"text": prompt}]
-            }],
-            "systemInstruction": {
-                "parts": [{"text": system_instruction}]
-            },
-            "generationConfig": {
-                "temperature": 0.2,
-                "responseMimeType": "application/json"
-            }
+            "model": self.model,
+            "response_format": {"type": "json_object"},
+            "messages": [
+                {"role": "system", "content": system_instruction},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.2
         }
 
         async with httpx.AsyncClient() as client:
-            res = await client.post(url, json=payload, timeout=45.0)
+            res = await client.post(url, headers=headers, json=payload, timeout=45.0)
             if res.status_code != 200:
-                raise RuntimeError(f"Gemini API page translation failed: {res.text}")
+                raise RuntimeError(f"DeepSeek API page translation failed: {res.text}")
             
             data = res.json()
             try:
-                text_response = data["candidates"][0]["content"]["parts"][0]["text"]
+                text_response = data["choices"][0]["message"]["content"]
                 result_json = json.loads(text_response)
                 
                 translations = []
@@ -151,4 +157,4 @@ Regions to translate:
                     glossary_updates=[]
                 )
             except Exception as e:
-                raise RuntimeError(f"Failed to parse structured JSON from Gemini: {e}. Raw: {data}")
+                raise RuntimeError(f"Failed to parse structured JSON from DeepSeek: {e}. Raw: {data}")

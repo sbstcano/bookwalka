@@ -12,7 +12,8 @@ class MockTranslationProvider(TranslationProvider):
         self,
         text: str,
         source_lang: str = "ja",
-        target_lang: str = "en"
+        target_lang: str = "en",
+        model: str | None = None
     ) -> str:
         cleaned_text = text.strip()
         if target_lang == "fr":

@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.config import settings
 from app.ocr.manga_ocr_engine import ocr_engine
+from app.api.auth import verify_api_key
 
 router = APIRouter()
 
-@router.get("/v1/health")
+@router.get("/v1/health", dependencies=[Depends(verify_api_key)])
 async def health_check():
     # Check if translation provider is configured (either mock, or key exists for others)
     provider = settings.translation_provider

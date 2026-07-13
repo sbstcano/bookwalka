@@ -1,19 +1,22 @@
 import io
-from fastapi import APIRouter, File, UploadFile, HTTPException, status, Query
+from fastapi import APIRouter, File, UploadFile, HTTPException, status, Query, Depends
 from PIL import Image
 from app.ocr.manga_ocr_engine import ocr_engine
 from app.translation.interface import get_translation_provider
 from app.translation.schemas import SelectionTranslationResponse
+from app.api.auth import verify_api_key
 
 router = APIRouter()
 
 @router.post(
     "/v1/translate-selection",
     response_model=SelectionTranslationResponse,
+    dependencies=[Depends(verify_api_key)]
 )
 async def translate_selection(
     file: UploadFile = File(...),
-    target_lang: str = Query("en", description="Target language code (e.g. en, fr, es)")
+    target_lang: str = Query("en", description="Target language code (e.g. en, fr, es)"),
+    model: str | None = Query(None, description="Optional translation model override (e.g. deepseek-v4-pro)")
 ):
     # Validate file type
     if not file.content_type.startswith("image/"):
@@ -52,7 +55,7 @@ async def translate_selection(
     try:
         # 2. Translate Japanese to target language
         provider = get_translation_provider()
-        translation_text = await provider.translate_text(japanese_text, target_lang=target_lang)
+        translation_text = await provider.translate_text(japanese_text, target_lang=target_lang, model=model)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

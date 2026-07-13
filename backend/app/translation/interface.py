@@ -7,7 +7,8 @@ class TranslationProvider(Protocol):
         self,
         text: str,
         source_lang: str = "ja",
-        target_lang: str = "fr"
+        target_lang: str = "fr",
+        model: str | None = None
     ) -> str:
         """Translates a single string of text."""
         ...
@@ -28,6 +29,9 @@ def get_translation_provider() -> TranslationProvider:
     elif provider == "gemini":
         from app.translation.providers.gemini_provider import GeminiTranslationProvider
         return GeminiTranslationProvider()
+    elif provider == "deepseek":
+        from app.translation.providers.deepseek_provider import DeepSeekTranslationProvider
+        return DeepSeekTranslationProvider()
     
     from app.translation.providers.mock_provider import MockTranslationProvider
     return MockTranslationProvider()

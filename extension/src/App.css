@@ -1,13 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
+:root {
+  background-color: #121214 !important;
+  background: #121214 !important;
+}
+
 html, body {
   width: 320px;
+  min-height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #121214;
+  background-color: #121214 !important;
   color: #e4e4e7;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+/* On iOS Safari, override the fixed width to fill the bottom sheet */
+html.ios-safari, html.ios-safari body {
+  width: 100% !important;
+  min-height: 100% !important;
+}
+
+#root {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: unset !important;
+  border: none !important;
+  margin: 0 !important;
 }
 
 .container {

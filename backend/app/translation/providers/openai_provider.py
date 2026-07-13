@@ -18,7 +18,8 @@ class OpenAITranslationProvider(TranslationProvider):
         self,
         text: str,
         source_lang: str = "ja",
-        target_lang: str = "en"
+        target_lang: str = "en",
+        model: str | None = None
     ) -> str:
         is_official = "api.openai.com" in settings.openai_api_base
         if is_official and not self.api_key:
@@ -41,8 +42,10 @@ class OpenAITranslationProvider(TranslationProvider):
         }
         target_lang_name = lang_names.get(target_lang.lower(), target_lang)
 
+        active_model = model or self.model
+
         payload = {
-            "model": self.model,
+            "model": active_model,
             "messages": [
                 {
                     "role": "system",

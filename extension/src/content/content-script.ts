@@ -1,6 +1,8 @@
 import type { ViewportInfo } from '../shared/types';
 import { mapCssToPixels } from './coordinate-mapper';
 
+console.log("Bookwalka: Content script injected successfully! (URL: " + window.location.href + ")");
+
 function showInvalidatedContextToast() {
   const toast = document.createElement('div');
   toast.style.position = 'fixed';
@@ -82,7 +84,7 @@ function handleKeyDown(e: KeyboardEvent) {
 }
 
 function startSelection() {
-  if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) {
+  if (typeof chrome === 'undefined' || !chrome.runtime) {
     showInvalidatedContextToast();
     return;
   }
@@ -115,6 +117,7 @@ function startSelection() {
       z-index: 2147483647;
       cursor: crosshair;
       user-select: none;
+      touch-action: none;
     }
     .selection-box {
       position: absolute;
@@ -158,8 +161,8 @@ function startSelection() {
 
   document.addEventListener('keydown', handleKeyDown);
 
-  overlayElement.addEventListener('mousedown', (e: MouseEvent) => {
-    if (e.button !== 0) return; // Only left click
+  overlayElement.addEventListener('pointerdown', (e: PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return; // Only left click for mice
     isDragging = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -171,7 +174,7 @@ function startSelection() {
     overlayElement!.appendChild(selectionBox);
   });
 
-  overlayElement.addEventListener('mousemove', (e: MouseEvent) => {
+  overlayElement.addEventListener('pointermove', (e: PointerEvent) => {
     if (!isDragging || !selectionBox) return;
 
     const currentX = e.clientX;
@@ -188,7 +191,7 @@ function startSelection() {
     selectionBox.style.height = `${height}px`;
   });
 
-  overlayElement.addEventListener('mouseup', (e: MouseEvent) => {
+  overlayElement.addEventListener('pointerup', (e: PointerEvent) => {
     if (!isDragging) return;
     isDragging = false;
 
@@ -268,7 +271,7 @@ function cropAndTranslate(viewportInfo: ViewportInfo, dataUrl: string) {
         }
 
         sendImageToBackend(blob, popupElement);
-      }, 'image/png');
+      }, 'image/jpeg', 0.95);
     } catch (err: any) {
       updatePopup(popupElement, { error: err.message || 'Error during cropping.' });
     }
@@ -283,21 +286,31 @@ function cropAndTranslate(viewportInfo: ViewportInfo, dataUrl: string) {
 
 function sendImageToBackend(imageBlob: Blob, popupElement: HTMLDivElement) {
   const formData = new FormData();
-  formData.append('file', imageBlob, 'crop.png');
+  formData.append('file', imageBlob, 'crop.jpg');
 
   if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) {
     updatePopup(popupElement, { error: 'Extension context invalidated. Please refresh the page.' });
     return;
   }
 
-  chrome.storage.local.get(['targetLanguage'], (result: Record<string, any>) => {
+  chrome.storage.local.get(['targetLanguage', 'backendUrl', 'translationModel', 'backendApiKey'], (result: Record<string, any>) => {
     const targetLang = result.targetLanguage || 'en';
+    const rawBackendUrl = result.backendUrl || 'http://127.0.0.1:8765';
+    const backendUrl = rawBackendUrl.replace(/\/+$/, '');
+    const model = result.translationModel || 'deepseek-v4-pro';
+    const apiKey = result.backendApiKey || '';
 
-    const url = `http://127.0.0.1:8765/v1/translate-selection?target_lang=${encodeURIComponent(targetLang)}`;
+    const url = `${backendUrl}/v1/translate-selection?target_lang=${encodeURIComponent(targetLang)}&model=${encodeURIComponent(model)}`;
+
+    const headers: Record<string, string> = {};
+    if (apiKey) {
+      headers['X-API-Key'] = apiKey;
+    }
 
     fetch(url, {
       method: 'POST',
       body: formData,
+      headers: headers
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -313,7 +326,7 @@ function sendImageToBackend(imageBlob: Blob, popupElement: HTMLDivElement) {
         });
       })
       .catch((err) => {
-        updatePopup(popupElement, { error: err.message || 'Failed to connect to local backend.' });
+        updatePopup(popupElement, { error: err.message || `Failed to connect to backend at ${backendUrl}.` });
       });
   });
 }
@@ -703,21 +716,39 @@ function updatePopup(popup: HTMLDivElement, state: PopupState) {
 
 // Listen for message from the extension popup or the service worker
 chrome.runtime.onMessage.addListener((message: any, _sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-  if (message.type === 'START_SELECTION' || message.type === 'START_SELECTION_TOP') {
-    if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) {
-      sendResponse({ status: 'error' });
-      return;
-    }
-    chrome.storage.local.get(['extensionEnabled'], (result) => {
-      const enabled = result.extensionEnabled !== false;
-      if (!enabled) {
-        sendResponse({ status: 'disabled' });
+  console.log("Bookwalka: Content script received message", message);
+  try {
+    if (message.type === 'START_SELECTION' || message.type === 'START_SELECTION_TOP') {
+      if (typeof chrome === 'undefined' || !chrome.runtime) {
+        console.error("Bookwalka: chrome or chrome.runtime is undefined!");
+        sendResponse({ status: 'error' });
         return;
       }
-      startSelection();
-      sendResponse({ status: 'started' });
-    });
-    return true; // Keep channel open
+      
+      const proceed = () => {
+        console.log("Bookwalka: Starting area selection...");
+        startSelection();
+        sendResponse({ status: 'started' });
+      };
+
+      if (chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['extensionEnabled'], (result) => {
+          const enabled = result ? result.extensionEnabled !== false : true;
+          if (!enabled) {
+            console.log("Bookwalka: Extension is disabled in settings.");
+            sendResponse({ status: 'disabled' });
+            return;
+          }
+          proceed();
+        });
+      } else {
+        console.log("Bookwalka: chrome.storage.local not available, defaulting to enabled.");
+        proceed();
+      }
+      return true; // Keep channel open
+    }
+  } catch (err) {
+    console.error("Bookwalka: Error in message listener", err);
   }
 });
 
@@ -732,19 +763,123 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
   if (isTyping) return;
 
   if (e.key.toLowerCase() === 't') {
-    if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) {
-      console.warn('Bookwalka: Extension context has been invalidated (reloaded). Please refresh the page.');
+    console.log("Bookwalka: Key 'T' pressed.");
+    if (typeof chrome === 'undefined' || !chrome.runtime) {
+      console.warn('Bookwalka: extension runtime is not available.');
       return;
     }
-    chrome.storage.local.get(['extensionEnabled'], (result) => {
-      const enabled = result.extensionEnabled !== false;
-      if (!enabled) return;
 
+    const trigger = () => {
       if (window === window.top) {
         startSelection();
       } else {
         chrome.runtime.sendMessage({ type: 'REQUEST_START_SELECTION' });
       }
-    });
+    };
+
+    if (chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(['extensionEnabled'], (result) => {
+        const enabled = result ? result.extensionEnabled !== false : true;
+        if (!enabled) return;
+        trigger();
+      });
+    } else {
+      trigger();
+    }
   }
 });
+
+function createFloatingActionButton() {
+  if (document.getElementById('bookwalka-fab-container')) return;
+
+  const container = document.createElement('div');
+  container.id = 'bookwalka-fab-container';
+  
+  const shadow = container.attachShadow({ mode: 'open' });
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00c2ff 0%, #0072ff 100%);
+      box-shadow: 0 4px 16px rgba(0, 114, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      z-index: 2147483646;
+      transition: transform 0.2s, box-shadow 0.2s;
+      touch-action: none;
+    }
+    .fab:active {
+      transform: scale(0.9);
+      box-shadow: 0 2px 8px rgba(0, 114, 255, 0.4);
+    }
+  `;
+  shadow.appendChild(style);
+
+  const fab = document.createElement('div');
+  fab.className = 'fab';
+  fab.textContent = '文';
+  shadow.appendChild(fab);
+
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let fabX = 0;
+  let fabY = 0;
+  let hasMoved = false;
+
+  fab.addEventListener('pointerdown', (e: PointerEvent) => {
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = fab.getBoundingClientRect();
+    fabX = window.innerWidth - rect.right;
+    fabY = window.innerHeight - rect.bottom;
+    fab.setPointerCapture(e.pointerId);
+  });
+
+  fab.addEventListener('pointermove', (e: PointerEvent) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      hasMoved = true;
+    }
+    const newRight = fabX - dx;
+    const newBottom = fabY - dy;
+    fab.style.right = `${Math.max(10, Math.min(window.innerWidth - 60, newRight))}px`;
+    fab.style.bottom = `${Math.max(10, Math.min(window.innerHeight - 60, newBottom))}px`;
+  });
+
+  fab.addEventListener('pointerup', (e: PointerEvent) => {
+    if (!isDragging) return;
+    isDragging = false;
+    fab.releasePointerCapture(e.pointerId);
+    if (!hasMoved) {
+      console.log("Bookwalka: FAB tapped.");
+      startSelection();
+    }
+  });
+
+  document.body.appendChild(container);
+}
+
+// Initialize FAB on load
+if (document.body) {
+  createFloatingActionButton();
+} else {
+  document.addEventListener('DOMContentLoaded', createFloatingActionButton);
+}
