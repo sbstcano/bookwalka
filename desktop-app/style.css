@@ -28,11 +28,16 @@
   padding: 0;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-dark);
   color: var(--color-text);
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -43,6 +48,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   padding: 1.5rem;
   gap: 1.2rem;
 }
@@ -66,7 +73,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  letter-spacing: -0.2px;
+  letter-spacing: 0;
   background: var(--logo-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -99,6 +106,7 @@ body {
   gap: 1.2rem;
   flex: 1;
   min-height: 0; /* Keep scroll internal */
+  overflow: hidden;
 }
 
 /* Panel Design */
@@ -111,6 +119,15 @@ body {
   flex-direction: column;
   gap: 1.25rem;
   min-height: 0;
+}
+
+.control-panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.logs-panel {
+  overflow: hidden;
 }
 
 .panel-title {

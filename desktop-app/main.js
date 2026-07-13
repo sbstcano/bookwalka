@@ -29,9 +29,12 @@ if (!fs.existsSync(hfCacheDir)) fs.mkdirSync(hfCacheDir, { recursive: true });
 const platform = os.platform();
 const ollamaBinaryName = platform === 'win32' ? 'ollama.exe' : 'ollama';
 const legacyOllamaPath = path.join(binDir, ollamaBinaryName);
-const ollamaPath = platform === 'linux'
-  ? path.join(ollamaRuntimeDir, 'bin', ollamaBinaryName)
-  : path.join(ollamaRuntimeDir, ollamaBinaryName);
+const getManagedOllamaPath = (runtimeDir) => (
+  platform === 'linux'
+    ? path.join(runtimeDir, 'bin', ollamaBinaryName)
+    : path.join(runtimeDir, ollamaBinaryName)
+);
+const ollamaPath = getManagedOllamaPath(ollamaRuntimeDir);
 
 // Stable Ollama version release URLs
 const OLLAMA_VERSION = 'v0.31.2';
@@ -118,6 +121,27 @@ function sendLog(source, text) {
       source,
       text: text.toString().trim()
     });
+  }
+}
+
+function shouldSuppressBackendLog(line) {
+  return [
+    /\[INFO\]\s+httpx:\s+HTTP Request:/,
+    /\[INFO\]\s+huggingface_hub\./,
+    /\[WARNING\]\s+huggingface_hub\.utils\._http:\s+Warning:/,
+    /^Warning: You are sending unauthenticated requests to the HF Hub\./,
+    /^Loading weights:\s+\d+%/
+  ].some((pattern) => pattern.test(line));
+}
+
+function sendProcessLog(source, data) {
+  const lines = data.toString().split(/\r?\n|\r/);
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (source === 'Backend' && shouldSuppressBackendLog(trimmed)) continue;
+    sendLog(source, trimmed);
   }
 }
 
@@ -221,21 +245,58 @@ function downloadWithRedirect(url, destPath, progressCallback) {
   });
 }
 
-async function extractOllamaArchive(archivePath) {
-  fs.rmSync(ollamaRuntimeDir, { recursive: true, force: true });
-  fs.mkdirSync(ollamaRuntimeDir, { recursive: true });
-  await extractArchive(archivePath, ollamaRuntimeDir, ollamaArchiveExtension);
+function replaceDirectory(sourceDir, destinationDir) {
+  const backupDir = `${destinationDir}.backup`;
+  let hasBackup = false;
 
-  if (!fs.existsSync(ollamaPath)) {
-    throw new Error(`Ollama executable was not found after extraction: ${ollamaPath}`);
+  fs.rmSync(backupDir, { recursive: true, force: true });
+
+  if (fs.existsSync(destinationDir)) {
+    fs.renameSync(destinationDir, backupDir);
+    hasBackup = true;
   }
 
-  if (platform !== 'win32') fs.chmodSync(ollamaPath, 0o755);
-  const installedVersion = await readOllamaVersion(ollamaPath);
-  if (!installedVersion || compareVersions(installedVersion, REQUIRED_OLLAMA_VERSION) < 0) {
-    throw new Error(
-      `Expected Ollama ${REQUIRED_OLLAMA_VERSION}, found ${installedVersion || 'unknown'}`
-    );
+  try {
+    fs.renameSync(sourceDir, destinationDir);
+    try {
+      fs.rmSync(backupDir, { recursive: true, force: true });
+    } catch (_) {}
+  } catch (err) {
+    try {
+      if (hasBackup && !fs.existsSync(destinationDir)) {
+        fs.renameSync(backupDir, destinationDir);
+      }
+    } catch (_) {}
+    throw err;
+  }
+}
+
+async function extractOllamaArchive(archivePath) {
+  const stagingDir = `${ollamaRuntimeDir}.tmp`;
+  const stagedOllamaPath = getManagedOllamaPath(stagingDir);
+
+  fs.rmSync(stagingDir, { recursive: true, force: true });
+  fs.mkdirSync(stagingDir, { recursive: true });
+
+  try {
+    await extractArchive(archivePath, stagingDir, ollamaArchiveExtension);
+
+    if (!fs.existsSync(stagedOllamaPath)) {
+      throw new Error(`Ollama executable was not found after extraction: ${stagedOllamaPath}`);
+    }
+
+    if (platform !== 'win32') fs.chmodSync(stagedOllamaPath, 0o755);
+    const installedVersion = await readOllamaVersion(stagedOllamaPath);
+    if (!installedVersion || compareVersions(installedVersion, REQUIRED_OLLAMA_VERSION) < 0) {
+      throw new Error(
+        `Expected Ollama ${REQUIRED_OLLAMA_VERSION}, found ${installedVersion || 'unknown'}`
+      );
+    }
+
+    replaceDirectory(stagingDir, ollamaRuntimeDir);
+  } catch (err) {
+    fs.rmSync(stagingDir, { recursive: true, force: true });
+    throw err;
   }
 }
 
@@ -507,10 +568,17 @@ async function startBackend(config, configEnv) {
     return true;
   }
 
+  const port = config.backendPort || '8765';
+  const healthUrl = `http://127.0.0.1:${port}/v1/health`;
+
+  if (await pollEndpoint(healthUrl, 1200, 250)) {
+    sendLog('Backend', `FastAPI backend is already online at ${healthUrl}. Reusing it.`);
+    sendStatus({ backendStatus: 'online' });
+    return true;
+  }
+
   sendLog('Backend', 'Starting Python translation backend...');
   sendStatus({ backendStatus: 'starting' });
-
-  const port = config.backendPort || '8765';
 
   if (app.isPackaged) {
     // In production: run compiled backend
@@ -537,8 +605,8 @@ async function startBackend(config, configEnv) {
     });
   }
 
-  backendProcess.stdout.on('data', (data) => sendLog('Backend', data));
-  backendProcess.stderr.on('data', (data) => sendLog('Backend', data));
+  backendProcess.stdout.on('data', (data) => sendProcessLog('Backend', data));
+  backendProcess.stderr.on('data', (data) => sendProcessLog('Backend', data));
 
   backendProcess.on('close', (code) => {
     sendLog('Backend', `Backend process terminated with code ${code}`);
@@ -552,7 +620,7 @@ async function startBackend(config, configEnv) {
   // The first start downloads the Manga OCR model (~400 MB), so keep polling
   // the actual versioned health endpoint while initialization finishes.
   const backendOnline = await pollEndpoint(
-    `http://127.0.0.1:${port}/v1/health`,
+    healthUrl,
     BACKEND_STARTUP_TIMEOUT_MS
   );
   if (backendOnline) {
