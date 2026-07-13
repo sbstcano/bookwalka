@@ -17,6 +17,7 @@
   "build": {
     "appId": "com.bookwalka.desktop",
     "productName": "Bookwalka",
+    "icon": "bell.png",
     "directories": {
       "output": "dist"
     },
@@ -26,7 +27,8 @@
       "preload.js",
       "index.html",
       "style.css",
-      "renderer.js"
+      "renderer.js",
+      "bell.png"
     ],
     "extraResources": [
       {

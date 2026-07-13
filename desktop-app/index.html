@@ -6,7 +6,7 @@
   <title>Bookwalka Desktop</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,10 +15,10 @@
     <!-- HEADER -->
     <header class="app-header">
       <div class="header-logo">
-        <h1>BOOKWALKA</h1>
-        <span class="badge badge-beta">DESKTOP</span>
+        <h1>Bookwalka</h1>
+        <span class="badge badge-beta">Desktop Companion</span>
       </div>
-      <p class="subtitle">Isolated local OCR & Translation Server companion for Bookwalka Extension</p>
+      <p class="subtitle">Isolated local OCR & Translation Server companion for the Bookwalka browser extension</p>
     </header>
 
     <!-- MAIN DASHBOARD CONTENT -->
@@ -31,14 +31,18 @@
         <!-- START/STOP ACTIONS -->
         <div class="action-buttons">
           <button id="btn-start" class="btn btn-start">
-            <span class="btn-icon">⚡</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+            </svg>
             <div class="btn-text">
               <strong>Start Server</strong>
               <small>Initialize Ollama & FastAPI</small>
             </div>
           </button>
           <button id="btn-stop" class="btn btn-stop" disabled>
-            <span class="btn-icon">🛑</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2" fill="currentColor"/>
+            </svg>
             <div class="btn-text">
               <strong>Stop Server</strong>
               <small>Kill all active processes</small>
