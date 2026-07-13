@@ -40,6 +40,21 @@ cp backend/.env.example backend/.env
 
 Available variables are documented in `backend/.env.example`.
 
+##### Using DeepSeek (Cloud Model)
+To use DeepSeek (e.g., `deepseek-v4-pro` or `deepseek-v4-flash`), configure:
+```ini
+MANGA_TRANSLATION_PROVIDER=deepseek
+MANGA_TRANSLATION_MODEL=deepseek-v4-pro # Or deepseek-v4-flash
+MANGA_DEEPSEEK_API_KEY=your_deepseek_api_key
+```
+
+##### Securing your VPS (Token Authentication)
+If you deploy this backend server to a public VPS, secure it by setting an API key:
+```ini
+MANGA_BACKEND_API_KEY=your_secure_secret_key
+```
+*(When set, endpoints like `/v1/health` and `/v1/translate-selection` will require the `X-API-Key` header matching this secret).*
+
 ##### Using Local LLMs (LM Studio / Ollama)
 Since LM Studio and Ollama offer APIs compatible with the OpenAI protocol, you can use them as a provider by configuring:
 ```ini
@@ -84,15 +99,46 @@ The server will be available at `http://127.0.0.1:8765`.
 
 ---
 
+### 3. Safari Web Extension (iOS / iPadOS)
+
+For platforms like iOS Safari where BookWalker uses a cross-origin sandboxed iframe which blocks webpages from reading page pixels (tainted canvas security error), a native Safari Web Extension is generated to perform screenshots via privileged browser APIs.
+
+#### Compilation & Converting
+1. Compile the extension and convert it to a native iOS project:
+   ```bash
+   cd extension
+   npm run build
+   xcrun safari-web-extension-converter dist --ios-only --copy-resources --no-open --no-prompt --app-name Bookwalka --bundle-identifier com.sbstcano.BookwalkaApp --project-location ../safari-extension --force
+   ```
+
+#### Building in Xcode
+1. Open Xcode on your Mac.
+2. Open the generated project `safari-extension/Bookwalka/Bookwalka.xcodeproj`.
+3. Select your iOS Device in the top destination bar.
+4. Select the **Bookwalka** project in the left pane, go to **Targets** -> **Bookwalka** -> **Signing & Capabilities** and set your **Team** (personal or company profile).
+5. Do the same for **Bookwalka Extension** target.
+6. Clean the build folder (`Cmd + Shift + K`) and run the project (`Cmd + R`) to deploy the app to your device.
+7. On your iPhone/iPad, go to **Settings** -> **Safari** -> **Extensions** and enable **Bookwalka**. Ensure permissions are set to "Always Allow on Every Website".
+
+---
+
 ## Usage
 
+### Desktop (Chrome / Chromium)
 1. Open any web page containing Japanese text (e.g., BookWalker JP, MangaDex, or any raw manga site).
 2. Click the extension icon to open the configuration panel.
-3. Verify that the status indicator says **Backend Online**.
+3. Saisissez votre adresse de VPS (HTTPS) et éventuellement la clé d'API.
 4. Click **Translate Area** (or simply press the **T** key on your keyboard).
 5. Draw a selection box over a speech bubble or any Japanese text.
 6. A premium popup will instantly appear next to the selection showing the original Japanese text (via OCR) and the translation.
 7. You can press the **Escape** key at any time to cancel selection mode.
+
+### Mobile (iOS Safari)
+1. Open BookWalker JP or any manga reader page in Safari.
+2. Tap the puzzle icon 🧩 in the address bar, select **Bookwalka**, and enter your **Backend URL** (must be `https://` for VPS deployment to bypass Mixed Content restrictions) and **Backend API Key** in the settings.
+3. Once the status indicator shows **Backend Online**, you will see a blue floating action button with the character **`文`** in the bottom-right corner of the viewport (or inside the reader iframe).
+4. Tap this floating button to enter selection mode, then touch-drag to draw a selection over a Japanese speech bubble.
+5. The translation popup will appear instantly. You can drag the button **`文`** to reposition it anywhere on the page.
 
 ---
 
