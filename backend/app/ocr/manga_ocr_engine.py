@@ -1,7 +1,28 @@
 import logging
+from pathlib import Path
+
 from PIL import Image
 
 logger = logging.getLogger("manga_ocr_engine")
+
+
+def _validate_japanese_dictionary() -> None:
+    """Fail with an actionable error when the packaged MeCab data is absent."""
+    import unidic_lite
+
+    dictionary_dir = Path(unidic_lite.DICDIR)
+    required_files = ("mecabrc", "sys.dic", "matrix.bin")
+    missing_files = [
+        name for name in required_files if not (dictionary_dir / name).is_file()
+    ]
+    if missing_files:
+        missing = ", ".join(missing_files)
+        raise RuntimeError(
+            "The Japanese OCR dictionary is incomplete "
+            f"({dictionary_dir}; missing: {missing}). "
+            "Rebuild the backend with unidic_lite package data included."
+        )
+
 
 class MangaOcrEngine:
     def __init__(self):
@@ -10,6 +31,7 @@ class MangaOcrEngine:
     def load_model(self):
         if self._mocr is None:
             logger.info("Initializing MangaOcr engine...")
+            _validate_japanese_dictionary()
             from manga_ocr import MangaOcr
             self._mocr = MangaOcr()
             logger.info("MangaOcr engine loaded successfully.")

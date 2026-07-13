@@ -118,3 +118,71 @@ source venv/bin/activate
 cd backend
 pytest
 ```
+
+---
+
+## Standalone Desktop Packaging
+
+To compile and package the standalone Desktop Companion App:
+
+### 1. Compile the Python Backend Standalone Binary
+
+Before packaging the Electron companion, package the Python FastAPI backend into a standalone executable. Electron Builder is configured to look for it at `../backend/dist/bookwalka-backend`.
+
+#### On Linux
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Activate your virtual environment and run the build script:
+   ```bash
+   source ../venv/bin/activate
+   ./build_backend.sh
+   ```
+
+#### On Windows
+1. Open PowerShell / Command Prompt and navigate to the backend directory:
+   ```cmd
+   cd backend
+   ```
+2. Activate your virtual environment and run the batch file:
+   ```cmd
+   ..\venv\Scripts\activate
+   pip install pyinstaller
+   build_backend.bat
+   ```
+
+#### On macOS
+1. Open your terminal and navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Activate your virtual environment and run the build script:
+   ```bash
+   source ../venv/bin/activate
+   ./build_backend.sh
+   ```
+
+---
+
+### 2. Package the Electron Desktop Application
+
+Once the backend is built and exists in `backend/dist/bookwalka-backend`, package the Electron app.
+
+1. Navigate to the desktop-app folder:
+   ```bash
+   cd desktop-app
+   ```
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+3. Build the distributable package:
+   ```bash
+   npm run dist
+   ```
+
+#### Output Formats:
+* **On Linux**: Produces an **`AppImage`** under `desktop-app/dist/`.
+* **On Windows**: Produces a **`setup.exe`** (NSIS installer) under `desktop-app/dist/`.
+* **On macOS**: Produces a **`.dmg`** bundle (with an installer) under `desktop-app/dist/`.

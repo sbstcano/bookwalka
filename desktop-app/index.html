@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookwalka Desktop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="header-logo">
+        <h1>BOOKWALKA</h1>
+        <span class="badge badge-beta">DESKTOP</span>
+      </div>
+      <p class="subtitle">Isolated local OCR & Translation Server companion for Bookwalka Extension</p>
+    </header>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="dashboard-grid">
+      
+      <!-- LEFT SECTION: CONTROLS & SETTINGS -->
+      <section class="panel control-panel">
+        <h2 class="panel-title">Service Controls</h2>
+        
+        <!-- START/STOP ACTIONS -->
+        <div class="action-buttons">
+          <button id="btn-start" class="btn btn-start">
+            <span class="btn-icon">⚡</span>
+            <div class="btn-text">
+              <strong>Start Server</strong>
+              <small>Initialize Ollama & FastAPI</small>
+            </div>
+          </button>
+          <button id="btn-stop" class="btn btn-stop" disabled>
+            <span class="btn-icon">🛑</span>
+            <div class="btn-text">
+              <strong>Stop Server</strong>
+              <small>Kill all active processes</small>
+            </div>
+          </button>
+        </div>
+
+        <!-- SETTINGS CARD -->
+        <div class="settings-card">
+          <h3 class="settings-title">Configuration</h3>
+          
+          <div class="form-group">
+            <label for="select-model">Translation LLM Model</label>
+            <select id="select-model">
+              <option value="translategemma:4b">translategemma:4b (~3.3 GB - Fastest)</option>
+              <option value="translategemma:12b" selected>translategemma:12b (~8.1 GB - Very Precise)</option>
+              <option value="gemma2:2b">gemma2:2b (~1.6 GB - Multi-purpose)</option>
+              <option value="llama3:8b">llama3:8b (~4.7 GB)</option>
+            </select>
+            <small class="helper-text">Translategemma models are fine-tuned specifically for Japanese translation.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="select-device">OCR Engine Device</label>
+            <select id="select-device">
+              <option value="cpu" selected>CPU (Highly compatible)</option>
+              <option value="cuda">CUDA GPU (Requires NVIDIA card & drivers)</option>
+            </select>
+          </div>
+
+          <!-- COLLAPSIBLE ADVANCED SETTINGS -->
+          <details class="advanced-settings">
+            <summary>Advanced Port Configuration</summary>
+            <div class="advanced-grid">
+              <div class="form-group">
+                <label for="input-backend-port">Backend Port</label>
+                <input type="number" id="input-backend-port" value="8765">
+              </div>
+              <div class="form-group">
+                <label for="input-ollama-port">Ollama Port</label>
+                <input type="number" id="input-ollama-port" value="11434" disabled>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- SYSTEM SETUP STATUS CARD -->
+        <div class="setup-card" id="setup-card">
+          <h3 class="settings-title">Isolated Local Environment</h3>
+          <div class="setup-status-row">
+            <span>Ollama Binary status:</span>
+            <span id="setup-ollama-status" class="setup-badge status-missing">Checking...</span>
+          </div>
+          <button id="btn-download-ollama" class="btn btn-secondary btn-small" style="display: none;">
+            Download & Extract Ollama Binary
+          </button>
+          
+          <!-- Storage paths -->
+          <div class="paths-details">
+            <details>
+              <summary>View storage locations</summary>
+              <div class="paths-list">
+                <div><strong>Base Folder:</strong> <code id="path-userdata">...</code></div>
+                <div><strong>Models Cache:</strong> <code id="path-models">...</code></div>
+                <div><strong>OCR Cache:</strong> <code id="path-hf">...</code></div>
+              </div>
+            </details>
+          </div>
+
+          <button id="btn-purge-data" class="btn btn-secondary btn-small" style="background-color: rgba(255, 50, 75, 0.15); border: 1px solid rgba(255, 50, 75, 0.3); color: var(--color-error); margin-top: 0.5rem;">
+            Purge & Delete Downloaded Data
+          </button>
+        </div>
+
+      </section>
+
+      <!-- RIGHT SECTION: STATUS GRID & LOGS -->
+      <section class="panel logs-panel">
+        
+        <!-- STATUS GRID -->
+        <div class="status-grid">
+          
+          <div class="status-item" id="status-ollama">
+            <div class="status-header">
+              <span class="status-label">Ollama Engine</span>
+              <span class="status-dot dot-offline"></span>
+            </div>
+            <div class="status-value">Offline</div>
+            <!-- Download progress bar -->
+            <div class="progress-container" style="display: none;">
+              <div class="progress-bar-wrapper">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+              <span class="progress-details">0%</span>
+            </div>
+          </div>
+
+          <div class="status-item" id="status-model">
+            <div class="status-header">
+              <span class="status-label">Translation Model</span>
+              <span class="status-dot dot-offline"></span>
+            </div>
+            <div class="status-value">Offline</div>
+            <!-- Download progress bar -->
+            <div class="progress-container" style="display: none;">
+              <div class="progress-bar-wrapper">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+              <span class="progress-details">0%</span>
+            </div>
+          </div>
+
+          <div class="status-item" id="status-backend">
+            <div class="status-header">
+              <span class="status-label">OCR & API Backend</span>
+              <span class="status-dot dot-offline"></span>
+            </div>
+            <div class="status-value">Offline</div>
+          </div>
+
+        </div>
+
+        <!-- TERMINAL LOGS CONSOLE -->
+        <div class="console-card">
+          <div class="console-header">
+            <h3>Live Process Logs</h3>
+            <div class="console-controls">
+              <label class="checkbox-label">
+                <input type="checkbox" id="chk-autoscroll" checked> Auto-scroll
+              </label>
+              <button id="btn-clear-logs" class="btn-clear">Clear Logs</button>
+            </div>
+          </div>
+          <div class="console-output" id="console-output">
+            <div class="log-line system-line">[System] Welcome to Bookwalka Desktop app. Configure settings on the left and click "Start Server" to run the local backend server.</div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>

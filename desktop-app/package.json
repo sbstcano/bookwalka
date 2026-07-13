@@ -1,0 +1,64 @@
+{
+  "name": "bookwalka-desktop",
+  "version": "1.0.0",
+  "description": "Desktop companion for Bookwalka - Isolated local OCR and Translation server",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0"
+  },
+  "build": {
+    "appId": "com.bookwalka.desktop",
+    "productName": "Bookwalka",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "ollama-runtime.js",
+      "preload.js",
+      "index.html",
+      "style.css",
+      "renderer.js"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/dist/bookwalka-backend",
+        "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  },
+  "allowScripts": {
+    "electron@28.3.3": true
+  },
+  "dependencies": {
+    "extract-zip": "^2.0.1",
+    "tar": "^7.5.20",
+    "zstd-stream": "^1.1.1"
+  }
+}

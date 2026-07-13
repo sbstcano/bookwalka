@@ -45,4 +45,16 @@ app.include_router(translate_selection.router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8765, reload=True)
+    import sys
+    import os
+    
+    is_frozen = getattr(sys, 'frozen', False)
+    port = int(os.getenv("PORT", 8765))
+    
+    if is_frozen:
+        # Pass the app instance directly and disable reload when compiled
+        uvicorn.run(app, host="127.0.0.1", port=port)
+    else:
+        # Standard uvicorn reload configuration for development
+        uvicorn.run("app.main:app", host="127.0.0.1", port=port, reload=True)
+
