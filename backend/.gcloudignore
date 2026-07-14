@@ -1,0 +1,20 @@
+# Ignore git and standard ignores
+.git/
+.gitignore
+.gcloudignore
+
+# Ignore Python virtual environments
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore build and test files
+build/
+dist/
+*.spec
+.pytest_cache/
+tests/

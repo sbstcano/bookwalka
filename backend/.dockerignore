@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+venv/
+.venv/
+env/
+.env
+
+# Build & packaging artifacts
+build/
+dist/
+*.spec
+
+# Tests
+tests/
+.pytest_cache/
+
+# Git
+.git/
+.gitignore

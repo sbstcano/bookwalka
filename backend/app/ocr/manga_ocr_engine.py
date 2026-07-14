@@ -32,8 +32,19 @@ class MangaOcrEngine:
         if self._mocr is None:
             logger.info("Initializing MangaOcr engine...")
             _validate_japanese_dictionary()
+            import os
             from manga_ocr import MangaOcr
-            self._mocr = MangaOcr()
+            
+            # Check if local model directory exists to avoid network calls
+            possible_paths = ["/app/manga-ocr-base", "./manga-ocr-base", "manga-ocr-base"]
+            model_path = "kha-white/manga-ocr-base"
+            for path in possible_paths:
+                if os.path.isdir(path):
+                    model_path = path
+                    logger.info(f"Using local OCR model weights from {path}")
+                    break
+            
+            self._mocr = MangaOcr(model_path)
             logger.info("MangaOcr engine loaded successfully.")
 
     def ocr(self, image: Image.Image) -> str:

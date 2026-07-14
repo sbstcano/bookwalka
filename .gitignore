@@ -49,3 +49,6 @@ lerna-debug.log*
 *.ipa
 *.dSYM.zip
 *.dSYM/
+
+# Manga OCR local weights
+backend/manga-ocr-base/
