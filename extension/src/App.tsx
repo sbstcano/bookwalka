@@ -26,7 +26,7 @@ function App() {
   const [modelSaved, setModelSaved] = useState(false);
   const [apiKeySaved, setApiKeySaved] = useState(false);
   const [enabled, setEnabled] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
   useEffect(() => {
     let initialUrl = 'http://127.0.0.1:8765';
@@ -39,12 +39,15 @@ function App() {
     }
 
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(['targetLanguage', 'extensionEnabled', 'backendUrl', 'translationModel', 'backendApiKey'], (result: Record<string, any>) => {
+      chrome.storage.local.get(['targetLanguage', 'extensionEnabled', 'backendUrl', 'translationModel', 'backendApiKey', 'showImagePreview'], (result: Record<string, any>) => {
         if (result.targetLanguage) {
           setTargetLang(result.targetLanguage);
         }
         if (result.extensionEnabled !== undefined) {
           setEnabled(result.extensionEnabled);
+        }
+        if (result.showImagePreview !== undefined) {
+          setShowImagePreview(result.showImagePreview);
         }
         if (result.backendUrl) {
           setBackendUrl(result.backendUrl);
@@ -68,6 +71,13 @@ function App() {
     setEnabled(newValue);
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
       chrome.storage.local.set({ extensionEnabled: newValue });
+    }
+  };
+
+  const handleTogglePreview = (newValue: boolean) => {
+    setShowImagePreview(newValue);
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ showImagePreview: newValue });
     }
   };
 
@@ -157,27 +167,7 @@ function App() {
     }
   };
 
-  const handleStartSelection = () => {
-    setErrorMsg(null);
-    try {
-      if (typeof chrome !== 'undefined' && chrome.runtime) {
-        chrome.runtime.sendMessage({ type: 'POPUP_START_SELECTION' }, (response: any) => {
-          if (chrome.runtime.lastError) {
-            setErrorMsg('Error: ' + chrome.runtime.lastError.message);
-          } else if (response && response.error) {
-            setErrorMsg('Failed: ' + response.error);
-          } else {
-            // Close popup once selection starts
-            window.close();
-          }
-        });
-      } else {
-        setErrorMsg('Extension mode is not available (chrome.runtime is undefined).');
-      }
-    } catch (err: any) {
-      setErrorMsg('Error: ' + err.message);
-    }
-  };
+
 
   return (
     <div className="container">
@@ -206,25 +196,37 @@ function App() {
               <span className="slider round"></span>
             </label>
           </div>
+          <div className="toggle-row" style={{ marginTop: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+            <span style={{ fontSize: '13px', opacity: 0.85 }}>Show Image Preview</span>
+            <label className="switch">
+              <input 
+                type="checkbox" 
+                checked={showImagePreview} 
+                onChange={(e) => handleTogglePreview(e.target.checked)} 
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
         </div>
 
-        <button 
-          className="action-btn" 
-          onClick={handleStartSelection}
-          disabled={!enabled || health.status === 'offline'}
-        >
-          <svg className="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 3H9V5H5V9H3V3Z" fill="currentColor"/>
-            <path d="M15 3H21V9H19V5H15V3Z" fill="currentColor"/>
-            <path d="M3 15H5V19H9V21H3V15Z" fill="currentColor"/>
-            <path d="M19 15H21V21H15V19H19V15Z" fill="currentColor"/>
-            <path d="M7 11V7H11V11H7Z" fill="currentColor" opacity="0.3"/>
-            <path d="M13 11V7H17V11H13Z" fill="currentColor" opacity="0.3"/>
-            <path d="M7 17V13H11V17H7Z" fill="currentColor" opacity="0.3"/>
-            <path d="M13 17V13H17V17H13Z" fill="currentColor" opacity="0.3"/>
-          </svg>
-          Translate Area
-        </button>
+        <div className="shortcut-tip" style={{ 
+          background: 'rgba(255, 255, 255, 0.03)', 
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '8px',
+          padding: '12px',
+          fontSize: '13px',
+          lineHeight: '1.6',
+          color: '#a1a1aa',
+          textAlign: 'left',
+          marginTop: '16px',
+          marginBottom: '8px'
+        }}>
+          💡 <strong style={{ color: '#e4e4e7' }}>How to translate:</strong>
+          <div style={{ marginTop: '6px', paddingLeft: '4px' }}>
+            • <strong>Desktop:</strong> Press key <kbd style={{ background: '#27272a', padding: '2px 5px', borderRadius: '4px', border: '1px solid #3f3f46', color: '#f4f4f5', fontFamily: 'monospace', fontSize: '11px' }}>T</kbd> on the page.<br />
+            • <strong>Mobile:</strong> Tap the blue floating button <strong style={{ color: '#00c2ff' }}>文</strong>.
+          </div>
+        </div>
 
         {health.status === 'offline' && (
           <div className="error-banner">
@@ -234,11 +236,7 @@ function App() {
           </div>
         )}
 
-        {errorMsg && (
-          <div className="error-banner">
-            {errorMsg}
-          </div>
-        )}
+
 
         <section className="settings-section">
           <div className="input-group">

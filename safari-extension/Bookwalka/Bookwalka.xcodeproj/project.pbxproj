@@ -7,45 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		985B58BC30055ED20070D6E7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B58BB30055ED20070D6E7 /* AppDelegate.swift */; };
-		985B58C030055ED20070D6E7 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 985B58BE30055ED20070D6E7 /* Main.html */; };
-		985B58C230055ED20070D6E7 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 985B58C130055ED20070D6E7 /* Icon.png */; };
-		985B58C430055ED20070D6E7 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 985B58C330055ED20070D6E7 /* Style.css */; };
-		985B58C630055ED20070D6E7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B58C530055ED20070D6E7 /* SceneDelegate.swift */; };
-		985B58C830055ED20070D6E7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B58C730055ED20070D6E7 /* ViewController.swift */; };
-		985B58CB30055ED20070D6E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 985B58C930055ED20070D6E7 /* LaunchScreen.storyboard */; };
-		985B58CE30055ED20070D6E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 985B58CC30055ED20070D6E7 /* Main.storyboard */; };
-		985B58D630055ED20070D6E7 /* Bookwalka Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 985B58D530055ED20070D6E7 /* Bookwalka Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		985B58DB30055ED20070D6E7 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B58DA30055ED20070D6E7 /* SafariWebExtensionHandler.swift */; };
-		985B58DD30055ED20070D6E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 985B58CF30055ED20070D6E7 /* Assets.xcassets */; };
-		985B58F030055ED20070D6E7 /* bell.png in Resources */ = {isa = PBXBuildFile; fileRef = 985B58E830055ED20070D6E7 /* bell.png */; };
-		985B58F130055ED20070D6E7 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 985B58E930055ED20070D6E7 /* index.html */; };
-		985B58F230055ED20070D6E7 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 985B58EA30055ED20070D6E7 /* manifest.json */; };
-		985B58F330055ED20070D6E7 /* content-script.js in Resources */ = {isa = PBXBuildFile; fileRef = 985B58EB30055ED20070D6E7 /* content-script.js */; };
-		985B58F430055ED20070D6E7 /* service-worker.js in Resources */ = {isa = PBXBuildFile; fileRef = 985B58EC30055ED20070D6E7 /* service-worker.js */; };
-		985B58F530055ED20070D6E7 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 985B58ED30055ED20070D6E7 /* assets */; };
-		985B58F630055ED20070D6E7 /* icons.svg in Resources */ = {isa = PBXBuildFile; fileRef = 985B58EE30055ED20070D6E7 /* icons.svg */; };
-		985B58F730055ED20070D6E7 /* favicon.svg in Resources */ = {isa = PBXBuildFile; fileRef = 985B58EF30055ED20070D6E7 /* favicon.svg */; };
+		9809F06430069C6E000835A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9809F06330069C6E000835A2 /* AppDelegate.swift */; };
+		9809F06830069C6E000835A2 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 9809F06630069C6E000835A2 /* Main.html */; };
+		9809F06A30069C6E000835A2 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9809F06930069C6E000835A2 /* Icon.png */; };
+		9809F06C30069C6E000835A2 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 9809F06B30069C6E000835A2 /* Style.css */; };
+		9809F06E30069C6E000835A2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9809F06D30069C6E000835A2 /* SceneDelegate.swift */; };
+		9809F07030069C6E000835A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9809F06F30069C6E000835A2 /* ViewController.swift */; };
+		9809F07330069C6E000835A2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9809F07130069C6E000835A2 /* LaunchScreen.storyboard */; };
+		9809F07630069C6E000835A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9809F07430069C6E000835A2 /* Main.storyboard */; };
+		9809F07E30069C6F000835A2 /* Bookwalka Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9809F07D30069C6F000835A2 /* Bookwalka Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9809F08330069C6F000835A2 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9809F08230069C6F000835A2 /* SafariWebExtensionHandler.swift */; };
+		9809F08530069C6F000835A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9809F07730069C6F000835A2 /* Assets.xcassets */; };
+		9809F09830069C6F000835A2 /* bell.png in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09030069C6F000835A2 /* bell.png */; };
+		9809F09930069C6F000835A2 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09130069C6F000835A2 /* index.html */; };
+		9809F09A30069C6F000835A2 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09230069C6F000835A2 /* manifest.json */; };
+		9809F09B30069C6F000835A2 /* content-script.js in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09330069C6F000835A2 /* content-script.js */; };
+		9809F09C30069C6F000835A2 /* service-worker.js in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09430069C6F000835A2 /* service-worker.js */; };
+		9809F09D30069C6F000835A2 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09530069C6F000835A2 /* assets */; };
+		9809F09E30069C6F000835A2 /* icons.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09630069C6F000835A2 /* icons.svg */; };
+		9809F09F30069C6F000835A2 /* favicon.svg in Resources */ = {isa = PBXBuildFile; fileRef = 9809F09730069C6F000835A2 /* favicon.svg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		985B58D730055ED20070D6E7 /* PBXContainerItemProxy */ = {
+		9809F07F30069C6F000835A2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 985B58B030055ED20070D6E7 /* Project object */;
+			containerPortal = 9809F05830069C6E000835A2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 985B58D430055ED20070D6E7;
+			remoteGlobalIDString = 9809F07C30069C6F000835A2;
 			remoteInfo = "Bookwalka Extension";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		985B58E330055ED20070D6E7 /* Embed Foundation Extensions */ = {
+		9809F08B30069C6F000835A2 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				985B58D630055ED20070D6E7 /* Bookwalka Extension.appex in Embed Foundation Extensions */,
+				9809F07E30069C6F000835A2 /* Bookwalka Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,39 +53,39 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		985B58B830055ED20070D6E7 /* Bookwalka.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookwalka.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		985B58BB30055ED20070D6E7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		985B58BF30055ED20070D6E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
-		985B58C130055ED20070D6E7 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		985B58C330055ED20070D6E7 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
-		985B58C530055ED20070D6E7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		985B58C730055ED20070D6E7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		985B58CA30055ED20070D6E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		985B58CD30055ED20070D6E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		985B58CF30055ED20070D6E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		985B58D030055ED20070D6E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		985B58D530055ED20070D6E7 /* Bookwalka Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookwalka Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		985B58DA30055ED20070D6E7 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
-		985B58DC30055ED20070D6E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		985B58E830055ED20070D6E7 /* bell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bell.png; path = Resources/bell.png; sourceTree = "<group>"; };
-		985B58E930055ED20070D6E7 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = index.html; path = Resources/index.html; sourceTree = "<group>"; };
-		985B58EA30055ED20070D6E7 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
-		985B58EB30055ED20070D6E7 /* content-script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "content-script.js"; path = "Resources/content-script.js"; sourceTree = "<group>"; };
-		985B58EC30055ED20070D6E7 /* service-worker.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "service-worker.js"; path = "Resources/service-worker.js"; sourceTree = "<group>"; };
-		985B58ED30055ED20070D6E7 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = Resources/assets; sourceTree = "<group>"; };
-		985B58EE30055ED20070D6E7 /* icons.svg */ = {isa = PBXFileReference; lastKnownFileType = text; name = icons.svg; path = Resources/icons.svg; sourceTree = "<group>"; };
-		985B58EF30055ED20070D6E7 /* favicon.svg */ = {isa = PBXFileReference; lastKnownFileType = text; name = favicon.svg; path = Resources/favicon.svg; sourceTree = "<group>"; };
+		9809F06030069C6E000835A2 /* Bookwalka.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookwalka.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9809F06330069C6E000835A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9809F06730069C6E000835A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		9809F06930069C6E000835A2 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		9809F06B30069C6E000835A2 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		9809F06D30069C6E000835A2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		9809F06F30069C6E000835A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9809F07230069C6E000835A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9809F07530069C6E000835A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9809F07730069C6F000835A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9809F07830069C6F000835A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9809F07D30069C6F000835A2 /* Bookwalka Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookwalka Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9809F08230069C6F000835A2 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		9809F08430069C6F000835A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9809F09030069C6F000835A2 /* bell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bell.png; path = Resources/bell.png; sourceTree = "<group>"; };
+		9809F09130069C6F000835A2 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = index.html; path = Resources/index.html; sourceTree = "<group>"; };
+		9809F09230069C6F000835A2 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
+		9809F09330069C6F000835A2 /* content-script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "content-script.js"; path = "Resources/content-script.js"; sourceTree = "<group>"; };
+		9809F09430069C6F000835A2 /* service-worker.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "service-worker.js"; path = "Resources/service-worker.js"; sourceTree = "<group>"; };
+		9809F09530069C6F000835A2 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = Resources/assets; sourceTree = "<group>"; };
+		9809F09630069C6F000835A2 /* icons.svg */ = {isa = PBXFileReference; lastKnownFileType = text; name = icons.svg; path = Resources/icons.svg; sourceTree = "<group>"; };
+		9809F09730069C6F000835A2 /* favicon.svg */ = {isa = PBXFileReference; lastKnownFileType = text; name = favicon.svg; path = Resources/favicon.svg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		985B58B530055ED20070D6E7 /* Frameworks */ = {
+		9809F05D30069C6E000835A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		985B58D230055ED20070D6E7 /* Frameworks */ = {
+		9809F07A30069C6F000835A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -95,70 +95,70 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		985B58AF30055ED20070D6E7 = {
+		9809F05730069C6E000835A2 = {
 			isa = PBXGroup;
 			children = (
-				985B58BA30055ED20070D6E7 /* Bookwalka */,
-				985B58D930055ED20070D6E7 /* Bookwalka Extension */,
-				985B58B930055ED20070D6E7 /* Products */,
+				9809F06230069C6E000835A2 /* Bookwalka */,
+				9809F08130069C6F000835A2 /* Bookwalka Extension */,
+				9809F06130069C6E000835A2 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		985B58B930055ED20070D6E7 /* Products */ = {
+		9809F06130069C6E000835A2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				985B58B830055ED20070D6E7 /* Bookwalka.app */,
-				985B58D530055ED20070D6E7 /* Bookwalka Extension.appex */,
+				9809F06030069C6E000835A2 /* Bookwalka.app */,
+				9809F07D30069C6F000835A2 /* Bookwalka Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		985B58BA30055ED20070D6E7 /* Bookwalka */ = {
+		9809F06230069C6E000835A2 /* Bookwalka */ = {
 			isa = PBXGroup;
 			children = (
-				985B58BB30055ED20070D6E7 /* AppDelegate.swift */,
-				985B58C530055ED20070D6E7 /* SceneDelegate.swift */,
-				985B58C730055ED20070D6E7 /* ViewController.swift */,
-				985B58C930055ED20070D6E7 /* LaunchScreen.storyboard */,
-				985B58CC30055ED20070D6E7 /* Main.storyboard */,
-				985B58CF30055ED20070D6E7 /* Assets.xcassets */,
-				985B58D030055ED20070D6E7 /* Info.plist */,
-				985B58BD30055ED20070D6E7 /* Resources */,
+				9809F06330069C6E000835A2 /* AppDelegate.swift */,
+				9809F06D30069C6E000835A2 /* SceneDelegate.swift */,
+				9809F06F30069C6E000835A2 /* ViewController.swift */,
+				9809F07130069C6E000835A2 /* LaunchScreen.storyboard */,
+				9809F07430069C6E000835A2 /* Main.storyboard */,
+				9809F07730069C6F000835A2 /* Assets.xcassets */,
+				9809F07830069C6F000835A2 /* Info.plist */,
+				9809F06530069C6E000835A2 /* Resources */,
 			);
 			path = Bookwalka;
 			sourceTree = "<group>";
 		};
-		985B58BD30055ED20070D6E7 /* Resources */ = {
+		9809F06530069C6E000835A2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				985B58BE30055ED20070D6E7 /* Main.html */,
-				985B58C130055ED20070D6E7 /* Icon.png */,
-				985B58C330055ED20070D6E7 /* Style.css */,
+				9809F06630069C6E000835A2 /* Main.html */,
+				9809F06930069C6E000835A2 /* Icon.png */,
+				9809F06B30069C6E000835A2 /* Style.css */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		985B58D930055ED20070D6E7 /* Bookwalka Extension */ = {
+		9809F08130069C6F000835A2 /* Bookwalka Extension */ = {
 			isa = PBXGroup;
 			children = (
-				985B58E730055ED20070D6E7 /* Resources */,
-				985B58DA30055ED20070D6E7 /* SafariWebExtensionHandler.swift */,
-				985B58DC30055ED20070D6E7 /* Info.plist */,
+				9809F08F30069C6F000835A2 /* Resources */,
+				9809F08230069C6F000835A2 /* SafariWebExtensionHandler.swift */,
+				9809F08430069C6F000835A2 /* Info.plist */,
 			);
 			path = "Bookwalka Extension";
 			sourceTree = "<group>";
 		};
-		985B58E730055ED20070D6E7 /* Resources */ = {
+		9809F08F30069C6F000835A2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				985B58E830055ED20070D6E7 /* bell.png */,
-				985B58E930055ED20070D6E7 /* index.html */,
-				985B58EA30055ED20070D6E7 /* manifest.json */,
-				985B58EB30055ED20070D6E7 /* content-script.js */,
-				985B58EC30055ED20070D6E7 /* service-worker.js */,
-				985B58ED30055ED20070D6E7 /* assets */,
-				985B58EE30055ED20070D6E7 /* icons.svg */,
-				985B58EF30055ED20070D6E7 /* favicon.svg */,
+				9809F09030069C6F000835A2 /* bell.png */,
+				9809F09130069C6F000835A2 /* index.html */,
+				9809F09230069C6F000835A2 /* manifest.json */,
+				9809F09330069C6F000835A2 /* content-script.js */,
+				9809F09430069C6F000835A2 /* service-worker.js */,
+				9809F09530069C6F000835A2 /* assets */,
+				9809F09630069C6F000835A2 /* icons.svg */,
+				9809F09730069C6F000835A2 /* favicon.svg */,
 			);
 			name = Resources;
 			path = "Bookwalka Extension";
@@ -167,34 +167,34 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		985B58B730055ED20070D6E7 /* Bookwalka */ = {
+		9809F05F30069C6E000835A2 /* Bookwalka */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 985B58E430055ED20070D6E7 /* Build configuration list for PBXNativeTarget "Bookwalka" */;
+			buildConfigurationList = 9809F08C30069C6F000835A2 /* Build configuration list for PBXNativeTarget "Bookwalka" */;
 			buildPhases = (
-				985B58B430055ED20070D6E7 /* Sources */,
-				985B58B530055ED20070D6E7 /* Frameworks */,
-				985B58B630055ED20070D6E7 /* Resources */,
-				985B58E330055ED20070D6E7 /* Embed Foundation Extensions */,
+				9809F05C30069C6E000835A2 /* Sources */,
+				9809F05D30069C6E000835A2 /* Frameworks */,
+				9809F05E30069C6E000835A2 /* Resources */,
+				9809F08B30069C6F000835A2 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				985B58D830055ED20070D6E7 /* PBXTargetDependency */,
+				9809F08030069C6F000835A2 /* PBXTargetDependency */,
 			);
 			name = Bookwalka;
 			packageProductDependencies = (
 			);
 			productName = Bookwalka;
-			productReference = 985B58B830055ED20070D6E7 /* Bookwalka.app */;
+			productReference = 9809F06030069C6E000835A2 /* Bookwalka.app */;
 			productType = "com.apple.product-type.application";
 		};
-		985B58D430055ED20070D6E7 /* Bookwalka Extension */ = {
+		9809F07C30069C6F000835A2 /* Bookwalka Extension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 985B58E030055ED20070D6E7 /* Build configuration list for PBXNativeTarget "Bookwalka Extension" */;
+			buildConfigurationList = 9809F08830069C6F000835A2 /* Build configuration list for PBXNativeTarget "Bookwalka Extension" */;
 			buildPhases = (
-				985B58D130055ED20070D6E7 /* Sources */,
-				985B58D230055ED20070D6E7 /* Frameworks */,
-				985B58D330055ED20070D6E7 /* Resources */,
+				9809F07930069C6F000835A2 /* Sources */,
+				9809F07A30069C6F000835A2 /* Frameworks */,
+				9809F07B30069C6F000835A2 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -204,128 +204,128 @@
 			packageProductDependencies = (
 			);
 			productName = "Bookwalka Extension";
-			productReference = 985B58D530055ED20070D6E7 /* Bookwalka Extension.appex */;
+			productReference = 9809F07D30069C6F000835A2 /* Bookwalka Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		985B58B030055ED20070D6E7 /* Project object */ = {
+		9809F05830069C6E000835A2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
-					985B58B730055ED20070D6E7 = {
+					9809F05F30069C6E000835A2 = {
 						CreatedOnToolsVersion = 26.6;
 					};
-					985B58D430055ED20070D6E7 = {
+					9809F07C30069C6F000835A2 = {
 						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
-			buildConfigurationList = 985B58B330055ED20070D6E7 /* Build configuration list for PBXProject "Bookwalka" */;
+			buildConfigurationList = 9809F05B30069C6E000835A2 /* Build configuration list for PBXProject "Bookwalka" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 985B58AF30055ED20070D6E7;
+			mainGroup = 9809F05730069C6E000835A2;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 985B58B930055ED20070D6E7 /* Products */;
+			productRefGroup = 9809F06130069C6E000835A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				985B58B730055ED20070D6E7 /* Bookwalka */,
-				985B58D430055ED20070D6E7 /* Bookwalka Extension */,
+				9809F05F30069C6E000835A2 /* Bookwalka */,
+				9809F07C30069C6F000835A2 /* Bookwalka Extension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		985B58B630055ED20070D6E7 /* Resources */ = {
+		9809F05E30069C6E000835A2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				985B58C230055ED20070D6E7 /* Icon.png in Resources */,
-				985B58CE30055ED20070D6E7 /* Main.storyboard in Resources */,
-				985B58CB30055ED20070D6E7 /* LaunchScreen.storyboard in Resources */,
-				985B58C030055ED20070D6E7 /* Main.html in Resources */,
-				985B58DD30055ED20070D6E7 /* Assets.xcassets in Resources */,
-				985B58C430055ED20070D6E7 /* Style.css in Resources */,
+				9809F06A30069C6E000835A2 /* Icon.png in Resources */,
+				9809F07630069C6E000835A2 /* Main.storyboard in Resources */,
+				9809F07330069C6E000835A2 /* LaunchScreen.storyboard in Resources */,
+				9809F06830069C6E000835A2 /* Main.html in Resources */,
+				9809F08530069C6F000835A2 /* Assets.xcassets in Resources */,
+				9809F06C30069C6E000835A2 /* Style.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		985B58D330055ED20070D6E7 /* Resources */ = {
+		9809F07B30069C6F000835A2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				985B58F030055ED20070D6E7 /* bell.png in Resources */,
-				985B58F430055ED20070D6E7 /* service-worker.js in Resources */,
-				985B58F330055ED20070D6E7 /* content-script.js in Resources */,
-				985B58F530055ED20070D6E7 /* assets in Resources */,
-				985B58F230055ED20070D6E7 /* manifest.json in Resources */,
-				985B58F630055ED20070D6E7 /* icons.svg in Resources */,
-				985B58F130055ED20070D6E7 /* index.html in Resources */,
-				985B58F730055ED20070D6E7 /* favicon.svg in Resources */,
+				9809F09830069C6F000835A2 /* bell.png in Resources */,
+				9809F09C30069C6F000835A2 /* service-worker.js in Resources */,
+				9809F09B30069C6F000835A2 /* content-script.js in Resources */,
+				9809F09D30069C6F000835A2 /* assets in Resources */,
+				9809F09A30069C6F000835A2 /* manifest.json in Resources */,
+				9809F09E30069C6F000835A2 /* icons.svg in Resources */,
+				9809F09930069C6F000835A2 /* index.html in Resources */,
+				9809F09F30069C6F000835A2 /* favicon.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		985B58B430055ED20070D6E7 /* Sources */ = {
+		9809F05C30069C6E000835A2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				985B58C830055ED20070D6E7 /* ViewController.swift in Sources */,
-				985B58BC30055ED20070D6E7 /* AppDelegate.swift in Sources */,
-				985B58C630055ED20070D6E7 /* SceneDelegate.swift in Sources */,
+				9809F07030069C6E000835A2 /* ViewController.swift in Sources */,
+				9809F06430069C6E000835A2 /* AppDelegate.swift in Sources */,
+				9809F06E30069C6E000835A2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		985B58D130055ED20070D6E7 /* Sources */ = {
+		9809F07930069C6F000835A2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				985B58DB30055ED20070D6E7 /* SafariWebExtensionHandler.swift in Sources */,
+				9809F08330069C6F000835A2 /* SafariWebExtensionHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		985B58D830055ED20070D6E7 /* PBXTargetDependency */ = {
+		9809F08030069C6F000835A2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 985B58D430055ED20070D6E7 /* Bookwalka Extension */;
-			targetProxy = 985B58D730055ED20070D6E7 /* PBXContainerItemProxy */;
+			target = 9809F07C30069C6F000835A2 /* Bookwalka Extension */;
+			targetProxy = 9809F07F30069C6F000835A2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		985B58BE30055ED20070D6E7 /* Main.html */ = {
+		9809F06630069C6E000835A2 /* Main.html */ = {
 			isa = PBXVariantGroup;
 			children = (
-				985B58BF30055ED20070D6E7 /* Base */,
+				9809F06730069C6E000835A2 /* Base */,
 			);
 			name = Main.html;
 			sourceTree = "<group>";
 		};
-		985B58C930055ED20070D6E7 /* LaunchScreen.storyboard */ = {
+		9809F07130069C6E000835A2 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				985B58CA30055ED20070D6E7 /* Base */,
+				9809F07230069C6E000835A2 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		985B58CC30055ED20070D6E7 /* Main.storyboard */ = {
+		9809F07430069C6E000835A2 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				985B58CD30055ED20070D6E7 /* Base */,
+				9809F07530069C6E000835A2 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -333,7 +333,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		985B58DE30055ED20070D6E7 /* Debug */ = {
+		9809F08630069C6F000835A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -396,7 +396,7 @@
 			};
 			name = Debug;
 		};
-		985B58DF30055ED20070D6E7 /* Release */ = {
+		9809F08730069C6F000835A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -452,7 +452,7 @@
 			};
 			name = Release;
 		};
-		985B58E130055ED20070D6E7 /* Debug */ = {
+		9809F08930069C6F000835A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -485,7 +485,7 @@
 			};
 			name = Debug;
 		};
-		985B58E230055ED20070D6E7 /* Release */ = {
+		9809F08A30069C6F000835A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -518,7 +518,7 @@
 			};
 			name = Release;
 		};
-		985B58E530055ED20070D6E7 /* Debug */ = {
+		9809F08D30069C6F000835A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -558,7 +558,7 @@
 			};
 			name = Debug;
 		};
-		985B58E630055ED20070D6E7 /* Release */ = {
+		9809F08E30069C6F000835A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -601,34 +601,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		985B58B330055ED20070D6E7 /* Build configuration list for PBXProject "Bookwalka" */ = {
+		9809F05B30069C6E000835A2 /* Build configuration list for PBXProject "Bookwalka" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				985B58DE30055ED20070D6E7 /* Debug */,
-				985B58DF30055ED20070D6E7 /* Release */,
+				9809F08630069C6F000835A2 /* Debug */,
+				9809F08730069C6F000835A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		985B58E030055ED20070D6E7 /* Build configuration list for PBXNativeTarget "Bookwalka Extension" */ = {
+		9809F08830069C6F000835A2 /* Build configuration list for PBXNativeTarget "Bookwalka Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				985B58E130055ED20070D6E7 /* Debug */,
-				985B58E230055ED20070D6E7 /* Release */,
+				9809F08930069C6F000835A2 /* Debug */,
+				9809F08A30069C6F000835A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		985B58E430055ED20070D6E7 /* Build configuration list for PBXNativeTarget "Bookwalka" */ = {
+		9809F08C30069C6F000835A2 /* Build configuration list for PBXNativeTarget "Bookwalka" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				985B58E530055ED20070D6E7 /* Debug */,
-				985B58E630055ED20070D6E7 /* Release */,
+				9809F08D30069C6F000835A2 /* Debug */,
+				9809F08E30069C6F000835A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 985B58B030055ED20070D6E7 /* Project object */;
+	rootObject = 9809F05830069C6E000835A2 /* Project object */;
 }

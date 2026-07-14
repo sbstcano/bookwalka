@@ -40,12 +40,14 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
     if (result.extensionEnabled !== undefined) {
       isExtensionEnabled = !!result.extensionEnabled;
     }
+    updateFloatingActionButtonVisibility();
   });
 
   // Listen for real-time changes
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.extensionEnabled) {
       isExtensionEnabled = !!changes.extensionEnabled.newValue;
+      updateFloatingActionButtonVisibility();
       if (!isExtensionEnabled) {
         removeSelectionOverlay();
       }
@@ -127,24 +129,6 @@ function startSelection() {
       box-sizing: border-box;
       box-shadow: 0 0 0 9999vw rgba(0, 0, 0, 0.4);
     }
-    .helper-text {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(20, 20, 20, 0.9);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      pointer-events: none;
-      z-index: 2147483647;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      text-align: center;
-    }
   `;
   shadow.appendChild(style);
 
@@ -152,12 +136,6 @@ function startSelection() {
   overlayElement = document.createElement('div');
   overlayElement.className = 'overlay';
   shadow.appendChild(overlayElement);
-
-  // Helper text
-  const helper = document.createElement('div');
-  helper.className = 'helper-text';
-  helper.innerText = 'Drag to select the area to translate (Esc to cancel)';
-  shadow.appendChild(helper);
 
   document.addEventListener('keydown', handleKeyDown);
 
@@ -270,7 +248,17 @@ function cropAndTranslate(viewportInfo: ViewportInfo, dataUrl: string) {
           return;
         }
 
-        sendImageToBackend(blob, popupElement);
+        // Check if image preview is enabled in settings (default to false)
+        chrome.storage.local.get(['showImagePreview'], (result) => {
+          const showPreview = result ? result.showImagePreview === true : false;
+          const imageSrc = showPreview ? URL.createObjectURL(blob) : undefined;
+
+          if (showPreview) {
+            updatePopup(popupElement, { loading: true, imageSrc });
+          }
+
+          sendImageToBackend(blob, popupElement, imageSrc);
+        });
       }, 'image/jpeg', 0.95);
     } catch (err: any) {
       updatePopup(popupElement, { error: err.message || 'Error during cropping.' });
@@ -284,12 +272,12 @@ function cropAndTranslate(viewportInfo: ViewportInfo, dataUrl: string) {
   img.src = dataUrl;
 }
 
-function sendImageToBackend(imageBlob: Blob, popupElement: HTMLDivElement) {
+function sendImageToBackend(imageBlob: Blob, popupElement: HTMLDivElement, imageSrc?: string) {
   const formData = new FormData();
   formData.append('file', imageBlob, 'crop.jpg');
 
   if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) {
-    updatePopup(popupElement, { error: 'Extension context invalidated. Please refresh the page.' });
+    updatePopup(popupElement, { error: 'Extension context invalidated. Please refresh the page.', imageSrc });
     return;
   }
 
@@ -322,11 +310,12 @@ function sendImageToBackend(imageBlob: Blob, popupElement: HTMLDivElement) {
       .then((data) => {
         updatePopup(popupElement, {
           japanese: data.japanese || 'No text detected',
-          translation: data.translation || 'Translation failed'
+          translation: data.translation || 'Translation failed',
+          imageSrc
         });
       })
       .catch((err) => {
-        updatePopup(popupElement, { error: err.message || `Failed to connect to backend at ${backendUrl}.` });
+        updatePopup(popupElement, { error: err.message || `Failed to connect to backend at ${backendUrl}.`, imageSrc });
       });
   });
 }
@@ -336,6 +325,7 @@ interface PopupState {
   error?: string;
   japanese?: string;
   translation?: string;
+  imageSrc?: string;
 }
 
 interface SelectionBounds {
@@ -682,6 +672,11 @@ function renderPopupContent(popup: HTMLDivElement, state: PopupState) {
   if (state.loading) {
     body.innerHTML = `
       <div class="loading-container">
+        ${state.imageSrc ? `
+          <div style="margin-bottom: 12px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); padding: 6px; border-radius: 6px; display: flex; justify-content: center;">
+            <img src="${state.imageSrc}" style="max-width: 100%; max-height: 80px; object-fit: contain; border-radius: 4px; opacity: 0.5;" />
+          </div>
+        ` : ''}
         <div class="spinner"></div>
         <div class="loading-text">OCR & Translating...</div>
       </div>
@@ -689,12 +684,25 @@ function renderPopupContent(popup: HTMLDivElement, state: PopupState) {
   } else if (state.error) {
     body.innerHTML = `
       <div class="error-container">
+        ${state.imageSrc ? `
+          <div style="margin-bottom: 12px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); padding: 6px; border-radius: 6px; display: flex; justify-content: center;">
+            <img src="${state.imageSrc}" style="max-width: 100%; max-height: 80px; object-fit: contain; border-radius: 4px; opacity: 0.5;" />
+          </div>
+        ` : ''}
         <strong>Error:</strong> ${state.error}
       </div>
     `;
   } else {
     body.innerHTML = `
       <div class="content-box">
+        ${state.imageSrc ? `
+          <div class="text-block" style="margin-bottom: 12px;">
+            <div class="label" style="opacity: 0.6; font-size: 11px; margin-bottom: 4px;">Captured Image Crop</div>
+            <div style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); padding: 6px; border-radius: 6px; display: flex; justify-content: center;">
+              <img src="${state.imageSrc}" style="max-width: 100%; max-height: 80px; object-fit: contain; border-radius: 4px;" />
+            </div>
+          </div>
+        ` : ''}
         <div class="text-block">
           <div class="label">Japanese (OCR)</div>
           <div class="text-val ja">${state.japanese || ''}</div>
@@ -877,9 +885,25 @@ function createFloatingActionButton() {
   document.body.appendChild(container);
 }
 
+function updateFloatingActionButtonVisibility() {
+  if (!document.body) return;
+  const container = document.getElementById('bookwalka-fab-container');
+  if (isExtensionEnabled) {
+    if (!container) {
+      createFloatingActionButton();
+    } else {
+      container.style.display = 'block';
+    }
+  } else {
+    if (container) {
+      container.style.display = 'none';
+    }
+  }
+}
+
 // Initialize FAB on load
 if (document.body) {
-  createFloatingActionButton();
+  updateFloatingActionButtonVisibility();
 } else {
-  document.addEventListener('DOMContentLoaded', createFloatingActionButton);
+  document.addEventListener('DOMContentLoaded', updateFloatingActionButtonVisibility);
 }

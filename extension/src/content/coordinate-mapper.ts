@@ -23,13 +23,21 @@ export function mapCssToPixels(
     throw new Error('Invalid screenshot dimensions');
   }
 
-  const scaleX = screenshotWidth / innerWidthCss;
-  const scaleY = screenshotHeight / innerHeightCss;
+  // Use a single unified scale factor based on width to preserve the 1:1 pixel aspect ratio.
+  const scale = screenshotWidth / innerWidthCss;
 
-  const x = Math.round(cropCss.left * scaleX);
-  const y = Math.round(cropCss.top * scaleY);
-  const width = Math.round(cropCss.width * scaleX);
-  const height = Math.round(cropCss.height * scaleY);
+  // On iOS Safari, the screenshot returned by captureVisibleTab is of the full screen,
+  // but innerHeightCss only includes the visible web content (excluding top/bottom browser bars).
+  // We calculate the top bar offset from the screenshot's actual virtual height to avoid
+  // display zoom scaling mismatches (e.g. window.screen.height mismatching screenshot size).
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.maxTouchPoints > 1);
+  const screenshotHeightCss = screenshotHeight / scale;
+  const yOffset = isIOS ? (screenshotHeightCss - innerHeightCss) / 2 : 0;
+
+  const x = Math.round(cropCss.left * scale);
+  const y = Math.round((cropCss.top + yOffset) * scale);
+  const width = Math.round(cropCss.width * scale);
+  const height = Math.round(cropCss.height * scale);
 
   return { x, y, width, height };
 }

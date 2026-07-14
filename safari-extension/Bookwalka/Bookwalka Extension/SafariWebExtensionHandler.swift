@@ -2,7 +2,7 @@
 //  SafariWebExtensionHandler.swift
 //  Bookwalka Extension
 //
-//  Created by Sébastien Cano on 13/07/2026.
+//  Created by Sébastien Cano on 14/07/2026.
 //
 
 import SafariServices

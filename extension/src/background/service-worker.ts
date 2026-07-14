@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener((message: any, sender: chrome.runtime.Messa
 
   if (message.type === 'POPUP_START_SELECTION') {
     console.log("Bookwalka Background: Received POPUP_START_SELECTION request.");
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       if (chrome.runtime.lastError) {
         console.error("Bookwalka Background: Tab query error:", chrome.runtime.lastError.message);
         sendResponse({ error: chrome.runtime.lastError.message });
